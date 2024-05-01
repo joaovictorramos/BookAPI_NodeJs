@@ -1,0 +1,39 @@
+version: '3.3'
+
+services:
+  nodejs:
+    build: .
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    depends_on:
+      - mysql
+    environment:
+      MYSQL_DATABASE: db_description
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - nodejs_project
+
+  mysql:
+    image: mysql:8.0.29
+    container_name: mysql_book
+    restart: always
+    environment:
+      MYSQL_DATABASE: db_description
+      MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_nodejs:/var/lib/mysql
+    ports:
+      - "3308:3306"
+    networks:
+      - nodejs_project
+
+volumes:
+  mysql_nodejs:
+
+networks:
+  nodejs_project:
+    driver: bridge
